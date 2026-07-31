@@ -1,0 +1,19 @@
+ // Detection: UAC Bypass (Privilege Escalation)
+// ATT&CK: T1548.002 (Privilege Escalation)
+//
+// Looks for process creation events (Event ID 4688) where a
+// process was launched with elevated integrity from a parent
+// process commonly abused for UAC bypass techniques (e.g. fodhelp,
+// eventvwr, computerdefaults).
+
+SecurityEvent
+| where EventID == 4688
+| where ParentProcessName has_any ("fodhelper.exe", "eventvwr.exe", "computerdefaults.exe", "sdclt.exe")
+| project
+    TimeGenerated,
+    Computer,
+    Account,
+    NewProcessName,
+    ParentProcessName,
+    CommandLine
+| order by TimeGenerated desc
