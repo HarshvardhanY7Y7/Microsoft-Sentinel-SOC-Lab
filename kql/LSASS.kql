@@ -1,0 +1,18 @@
+// Detection: LSASS Memory Access (Credential Access)
+// ATT&CK: T1003.001 (Credential Access)
+//
+// Looks for process access events (Event ID 4656/4663) targeting
+// lsass.exe, which indicates a potential credential dumping
+// attempt (e.g. via Mimikatz, ProcDump, or Task Manager dump).
+
+SecurityEvent
+| where EventID in (4656, 4663)
+| where ObjectName has "lsass.exe"
+| project
+    TimeGenerated,
+    Computer,
+    Account,
+    ProcessName,
+    ObjectName,
+    AccessMask
+| order by TimeGenerated desc
