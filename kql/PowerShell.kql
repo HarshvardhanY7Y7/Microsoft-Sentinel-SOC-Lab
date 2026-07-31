@@ -1,0 +1,19 @@
+// Detection: Suspicious PowerShell Execution
+// ATT&CK: T1059.001 (Execution)
+//
+// Looks for PowerShell process creation events (Event ID 4688) and
+// PowerShell script block logging events (Event ID 4104) on the
+// target host, surfacing the command line, parent process, and
+// executing user for investigation.
+
+SecurityEvent
+| where EventID in (4688, 4104)
+| where Process has "powershell.exe" or NewProcessName has "powershell.exe"
+| project
+    TimeGenerated,
+    Computer,
+    Account,
+    NewProcessName,
+    ParentProcessName,
+    CommandLine
+| order by TimeGenerated desc
