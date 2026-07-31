@@ -1,0 +1,16 @@
+// Detection: Windows Event Log Clearing (Defense Evasion)
+// ATT&CK: T1070.001 (Defense Evasion)
+//
+// Looks for Event ID 1102 (audit log cleared) and Event ID 104
+// (System log cleared), which are strong indicators of an attacker
+// attempting to remove evidence of prior activity.
+
+SecurityEvent
+| where EventID in (1102, 104)
+| project
+    TimeGenerated,
+    Computer,
+    Account,
+    EventID,
+    Activity
+| order by TimeGenerated desc
