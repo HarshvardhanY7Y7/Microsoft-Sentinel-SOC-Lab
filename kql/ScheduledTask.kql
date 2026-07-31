@@ -1,0 +1,16 @@
+// Detection: Scheduled Task Creation (Persistence)
+// ATT&CK: T1053.005 (Persistence)
+//
+// Looks for scheduled task creation events (Event ID 4698) to
+// identify persistence mechanisms established on the host.
+
+SecurityEvent
+| where EventID == 4698
+| project
+    TimeGenerated,
+    Computer,
+    Account,
+    TaskName = TargetName,
+    TaskContent = TargetSubject,
+    Process
+| order by TimeGenerated desc
